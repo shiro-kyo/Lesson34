@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.techacademy.constants.ErrorKinds;
 import com.techacademy.constants.ErrorMessage;
-
 import com.techacademy.entity.Employee;
 import com.techacademy.service.EmployeeService;
 import com.techacademy.service.UserDetail;
@@ -113,4 +112,38 @@ public class EmployeeController {
         return "redirect:/employees";
     }
 
+ // 従業員更新処理
+    @GetMapping("/{code}/update")
+    public String update(@PathVariable("code") String code, Model model) {
+        Employee employee = employeeService.findByCode(code);
+        model.addAttribute("employee", employee);
+        return "employees/update";
+    }
+
+    @PostMapping("/{code}/update")
+    public String update(@PathVariable("code") String code,
+                         @Validated @ModelAttribute Employee employee,
+                         BindingResult res,
+                         Model model) {
+
+        // code改ざん対策：URLのcodeを優先
+        employee.setCode(code);
+
+        // 入力チェック（バリデーション）
+        if (res.hasErrors()) {
+            model.addAttribute("employee", employee);
+            return "employees/update";
+        }
+
+        // 更新（※次にServiceにupdate作る）
+        ErrorKinds result = employeeService.update(employee);
+
+        if (ErrorMessage.contains(result)) {
+            model.addAttribute(ErrorMessage.getErrorName(result), ErrorMessage.getErrorValue(result));
+            model.addAttribute("employee", employee);
+            return "employees/update";
+        }
+
+        return "redirect:/employees/" + code + "/";
+    }
 }

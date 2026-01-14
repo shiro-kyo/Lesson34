@@ -8,11 +8,11 @@ import java.util.regex.Pattern;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.techacademy.constants.ErrorKinds;
 import com.techacademy.entity.Employee;
 import com.techacademy.repository.EmployeeRepository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class EmployeeService {
@@ -71,6 +71,7 @@ public class EmployeeService {
         return employeeRepository.findAll();
     }
 
+    
     // 1件を検索
     public Employee findByCode(String code) {
         // findByIdで検索
@@ -115,6 +116,41 @@ public class EmployeeService {
         // 桁数チェック
         int passwordLength = employee.getPassword().length();
         return passwordLength < 8 || 16 < passwordLength;
+    }
+    
+    @Transactional
+    public ErrorKinds update(Employee input) {
+
+        // 既存データ取得
+        Employee current = findByCode(input.getCode());
+        if (current == null) {
+            return ErrorKinds.CHECK_ERROR; // ←手元のErrorKindsに「該当なし」が無ければこれ等に置換
+        }
+
+        // 氏名・権限を更新
+        current.setName(input.getName());
+        current.setRole(input.getRole());
+
+        // パスワード：空なら変更しない
+        if (input.getPassword() != null && !input.getPassword().isBlank()) {
+
+            // 形式チェック（既存関数を使う）
+            if (isHalfSizeCheckError(input)) {
+                return ErrorKinds.HALFSIZE_ERROR;
+            }
+            if (isOutOfRangePassword(input)) {
+                return ErrorKinds.RANGECHECK_ERROR;
+            }
+
+            // encodeして反映
+            current.setPassword(passwordEncoder.encode(input.getPassword()));
+        }
+
+        // updatedAtのみ更新（createdAtは維持）
+        current.setUpdatedAt(LocalDateTime.now());
+
+        employeeRepository.save(current);
+        return ErrorKinds.SUCCESS;
     }
 
 }
