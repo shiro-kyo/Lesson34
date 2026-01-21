@@ -134,16 +134,20 @@ public class EmployeeService {
         // パスワード：空なら変更しない
         if (input.getPassword() != null && !input.getPassword().isBlank()) {
 
-            // 形式チェック（既存関数を使う）
-            if (isHalfSizeCheckError(input)) {
-                return ErrorKinds.HALFSIZE_ERROR;
+//            // 形式チェック（既存関数を使う）
+//            if (isHalfSizeCheckError(input)) {
+//                return ErrorKinds.HALFSIZE_ERROR;
+//            }
+//            if (isOutOfRangePassword(input)) {
+//                return ErrorKinds.RANGECHECK_ERROR;
+//            }
+//
+//            // encodeして反映
+//            current.setPassword(passwordEncoder.encode(input.getPassword()));
+            ErrorKinds kinds = employeePasswordCheck(input);
+            if (kinds != ErrorKinds.CHECK_OK) {
+                return kinds;
             }
-            if (isOutOfRangePassword(input)) {
-                return ErrorKinds.RANGECHECK_ERROR;
-            }
-
-            // encodeして反映
-            current.setPassword(passwordEncoder.encode(input.getPassword()));
         }
 
         // updatedAtのみ更新（createdAtは維持）

@@ -127,7 +127,7 @@ public class EmployeeController {
                          Model model) {
 
         // code改ざん対策：URLのcodeを優先
-        employee.setCode(code);
+       //  employee.setCode(code);
 
         // 入力チェック（バリデーション）
         if (res.hasErrors()) {
