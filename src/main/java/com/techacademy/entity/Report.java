@@ -60,11 +60,7 @@ public class Report {
     @NotEmpty
     private String content;
 
-    // 社員番号
-    @Column(length = 10, nullable = false)
-    @NotEmpty
-    @Length(max = 10)
-    private String employeeCode;
+   
 
     // 削除フラグ
     @Column(columnDefinition="TINYINT", nullable = false)
