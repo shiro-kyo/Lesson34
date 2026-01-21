@@ -35,9 +35,9 @@
 
                   <tbody>
                     <tr th:each="report:${reportList}">
-                      <td class="align-middle" th:text="${employee.code}"></td>
-                      <td class="align-middle" th:text="${reports.name}"></td>
-                      <td class="align-middle" th:text="${reports.title}"></td>
+                      <td class="align-middle" th:text="${report.employee.code}"></td>
+                      <td class="align-middle" th:text="${report.name}"></td>
+                      <td class="align-middle" th:text="${report.title}"></td>
                       <td class="align-middle">
                         <a th:href="@{/reports/{code}/(code=${reports.code})}"
                            class="btn btn-primary">
