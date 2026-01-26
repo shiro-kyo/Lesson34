@@ -21,6 +21,14 @@ public enum ErrorKinds {
     // チェックOK
     CHECK_OK,
     // 正常終了
-    SUCCESS, CHECK_ERROR;
+    SUCCESS, CHECK_ERROR,
+    // 日報：必須
+    REPORTDATE_BLANK_ERROR,
+    TITLE_BLANK_ERROR,
+    CONTENT_BLANK_ERROR,
+
+    // 日報：桁数
+    TITLE_LENGTH_ERROR,
+    CONTENT_LENGTH_ERROR,
 
 }
