@@ -80,4 +80,46 @@ public class ReportController {
 
         return "redirect:/reports";
     }
+    
+ // 日報更新画面（表示）
+    @GetMapping("/{id}/update")
+    public String update(@PathVariable("id") Integer id,
+                          @AuthenticationPrincipal UserDetail userDetail,
+                         Model model) {
+
+        Report report = reportService.findById(id).orElse(null);
+        if (report == null) {
+            return "redirect:/reports";
+        }
+
+        // 氏名表示用（new.htmlで *{employee.name} を使ってるなら必要）
+        report.setEmployee(userDetail.getEmployee());
+
+        model.addAttribute("report", report);
+        return "reports/update";
+    }
+
+    @PostMapping("/{id}/update")
+    public String update(@PathVariable("id") Integer id,
+                         @Validated @ModelAttribute Report report,
+                         BindingResult res,
+                         @AuthenticationPrincipal UserDetail userDetail,
+                         Model model) {
+
+        // 入力チェック（バリデーション）
+        if (res.hasErrors()) {
+            model.addAttribute("report", report);
+            return "reports/update";
+        }
+
+        ErrorKinds result =  reportService.update(report, userDetail.getEmployee());
+
+        if (ErrorMessage.contains(result)) {
+            model.addAttribute(ErrorMessage.getErrorName(result), ErrorMessage.getErrorValue(result));
+            model.addAttribute("report", report);
+            return "redirect:/reports";
+        }
+
+        return "redirect:/reports/" + id + "/";
+    }
 }
