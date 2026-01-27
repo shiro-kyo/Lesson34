@@ -74,10 +74,10 @@ public class ReportService {
         }
 
         // 同一日付チェック（更新：自分以外）
-        if (reportRepository.existsByEmployeeAndReportDateAndIdNot(
-                loginEmployee, input.getReportDate(), input.getId())) {
-            return ErrorKinds.DATECHECK_ERROR;
-        }
+//        if (reportRepository.existsByEmployeeAndReportDateAndIdNot(
+//                loginEmployee, input.getReportDate(), input.getId())) {
+//            return ErrorKinds.DATECHECK_ERROR;
+//        }
 
         // 更新（所有者はログイン中従業員に固定）
         current.setEmployee(loginEmployee);

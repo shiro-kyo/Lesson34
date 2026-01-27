@@ -54,8 +54,12 @@ public class ReportController {
     
     // 従業員新規登録画面
     @GetMapping(value = "/add")
-    public String create(@ModelAttribute Report report, @AuthenticationPrincipal UserDetail userDetail) {
-        report.setEmployee(userDetail.getEmployee());
+    public String create( Report report, @AuthenticationPrincipal UserDetail userDetail, Model model) {
+        if (userDetail != null) {
+            report = new Report();
+            report.setEmployee(userDetail.getEmployee());   
+        }
+        model.addAttribute("report", report);
         return "reports/new";
     }
 
@@ -66,7 +70,7 @@ public class ReportController {
 
         // 入力チェック
         if (res.hasErrors()) {
-            return create(report, userDetail);
+            return create(report, null, model);
         }
         
         Employee reportEmployee = userDetail.getEmployee();
@@ -75,7 +79,7 @@ public class ReportController {
 
             if (ErrorMessage.contains(result)) {
                 model.addAttribute(ErrorMessage.getErrorName(result), ErrorMessage.getErrorValue(result));
-                return create(report, userDetail);
+                return create(report, userDetail, model);
             }
 
         return "redirect:/reports";

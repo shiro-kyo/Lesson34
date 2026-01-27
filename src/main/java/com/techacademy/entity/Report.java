@@ -58,10 +58,9 @@ public class Report {
     // 内容
     @Column(columnDefinition = "LONGTEXT", nullable = false)
     @NotEmpty
+    @Length(max = 600)
     private String content;
-
-   
-
+  
     // 削除フラグ
     @Column(columnDefinition="TINYINT", nullable = false)
     private boolean deleteFlg;
