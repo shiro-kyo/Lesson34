@@ -41,12 +41,13 @@
                   <div class="mb-3">
                     <label class="form-label">氏名</label>
                     <div class="form-control-plaintext" th:text="*{employee.name}">氏名</div>
+                    <input type="hidden" th:field="*{employee.name}" id="employee.name">
                   </div>
 
                   <!-- タイトル -->
                   <div class="mb-3">
                     <label class="form-label">タイトル</label>
-                    <input type="text" class="form-control" th:field="*{title}" th:errorclass="is-invalid" maxlength="100">
+                    <input type="text" class="form-control" th:field="*{title}" th:errorclass="is-invalid">
                     <div class="invalid-feedback" th:errors="*{title}"></div>
                     <div class="mt-1">
                       <span th:if="${titleError != null}" th:text="${titleError}" class="text-danger"></span>
@@ -56,7 +57,7 @@
                   <!-- 内容 -->
                   <div class="mb-4">
                     <label class="form-label">内容</label>
-                    <textarea class="form-control" th:field="*{content}" th:errorclass="is-invalid" rows="8" maxlength="600"></textarea>
+                    <textarea class="form-control" th:field="*{content}" th:errorclass="is-invalid" rows="8" ></textarea>
                     <div class="invalid-feedback" th:errors="*{content}"></div>
                     <div class="mt-1">
                       <span th:if="${contentError != null}" th:text="${contentError}" class="text-danger"></span>

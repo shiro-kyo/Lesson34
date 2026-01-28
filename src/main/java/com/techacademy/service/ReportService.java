@@ -29,6 +29,11 @@ public class ReportService {
     public Optional<Report> findById(Integer id) {
         return reportRepository.findById(id);
     }
+    
+    public List<Report> findByEmployee(Employee employee) {
+        return reportRepository.findByEmployee(employee);
+    }
+
 
     // 日報保存（新規）
     @Transactional
@@ -73,11 +78,12 @@ public class ReportService {
             return ErrorKinds.CHECK_ERROR;
         }
 
-        // 同一日付チェック（更新：自分以外）
-//        if (reportRepository.existsByEmployeeAndReportDateAndIdNot(
-//                loginEmployee, input.getReportDate(), input.getId())) {
-//            return ErrorKinds.DATECHECK_ERROR;
-//        }
+//         同一日付チェック（更新：自分以外）
+        if (!input.getReportDate().equals(current.getReportDate()) && 
+                reportRepository.existsByEmployeeAndReportDateAndIdNot(
+                loginEmployee, input.getReportDate(), input.getId())) {
+            return ErrorKinds.DATECHECK_ERROR;
+        }
 
         // 更新（所有者はログイン中従業員に固定）
         current.setEmployee(loginEmployee);
@@ -115,4 +121,21 @@ public class ReportService {
 
         return ErrorKinds.CHECK_OK;
     }
+    
+ // 日報削除
+    @Transactional
+    public ErrorKinds delete(Integer id) {
+
+        Report report = reportRepository.findById(id).orElse(null);
+        if (report == null) {
+            return ErrorKinds.CHECK_ERROR;
+        }
+
+        report.setDeleteFlg(true);
+        report.setUpdatedAt(LocalDateTime.now());
+
+        reportRepository.save(report);
+        return ErrorKinds.SUCCESS;
+    }
+
 }

@@ -13,9 +13,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.Data;
 
@@ -46,6 +48,8 @@ public class Report {
 
 
     // 日付
+    @NotNull
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(nullable = false)
     private LocalDate reportDate;
 

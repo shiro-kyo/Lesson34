@@ -3,13 +3,16 @@
         <span class="text-light p-1">日報管理システム</span>
     </a>
     <ul class="mt-3 mb-5">
-        <li sec:authorize="hasAuthority('ADMIN')">
-            <a class="text-light" th:href="@{/employees}">従業員</a>
-        </li>
-        <li sec:authorize="hasAuthority('ADMIN')">
-            <a class="text-light" th:href="@{/reports}">日報</a>
-        </li>
-    </ul>
+           <!-- 管理者のみ表示 -->
+           <li sec:authorize="hasAuthority('ADMIN')">
+               <a class="text-light" th:href="@{/employees}">従業員</a>
+           </li>
+
+           <!-- 一般・管理者どちらも表示 -->
+           <li sec:authorize="hasAnyAuthority('ADMIN','GENERAL')">
+               <a class="text-light" th:href="@{/reports}">日報</a>
+           </li>
+       </ul>
     <form method="post" th:action="@{/logout}">
         <div class="p-1">
             <input type="submit" value="ログアウト" class="btn btn-light">

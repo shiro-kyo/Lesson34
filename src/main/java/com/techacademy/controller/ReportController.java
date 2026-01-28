@@ -81,8 +81,7 @@ public class ReportController {
                 model.addAttribute(ErrorMessage.getErrorName(result), ErrorMessage.getErrorValue(result));
                 return create(report, userDetail, model);
             }
-
-        return "redirect:/reports";
+            return "redirect:/reports";
     }
     
  // 日報更新画面（表示）
@@ -121,9 +120,26 @@ public class ReportController {
         if (ErrorMessage.contains(result)) {
             model.addAttribute(ErrorMessage.getErrorName(result), ErrorMessage.getErrorValue(result));
             model.addAttribute("report", report);
-            return "redirect:/reports";
+            return "reports/update";
         }
 
-        return "redirect:/reports/" + id + "/";
+        return "redirect:/reports";
     }
+    
+    @PostMapping("/{id}/delete")
+    public String delete(@PathVariable("id") Integer id,
+                         @AuthenticationPrincipal UserDetail userDetail,
+                         Model model) {
+
+        ErrorKinds result = reportService.delete(id);
+
+        if (ErrorMessage.contains(result)) {
+            model.addAttribute(ErrorMessage.getErrorName(result),
+                               ErrorMessage.getErrorValue(result));
+            return "redirect:/reports/" + id + "/";
+        }
+
+        return "redirect:/reports";
+    }
+
 }

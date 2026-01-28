@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.techacademy.constants.ErrorKinds;
 import com.techacademy.entity.Employee;
+import com.techacademy.entity.Report;
 import com.techacademy.repository.EmployeeRepository;
 
 @Service
@@ -54,17 +55,38 @@ public class EmployeeService {
     @Transactional
     public ErrorKinds delete(String code, UserDetail userDetail) {
 
-        // 自分を削除しようとした場合はエラーメッセージを表示
+        // 自分自身を削除しようとした場合
         if (code.equals(userDetail.getEmployee().getCode())) {
             return ErrorKinds.LOGINCHECK_ERROR;
         }
+
+        // 削除対象の従業員を取得
         Employee employee = findByCode(code);
+        if (employee == null) {
+            return ErrorKinds.CHECK_ERROR;
+        }
+
         LocalDateTime now = LocalDateTime.now();
+
+        /* ===== 日報削除（ここから）===== */
+
+        // 従業員に紐づく日報を取得
+        List<Report> reportList = reportService.findByEmployee(employee);
+
+        // 1件ずつ論理削除
+        for (Report report : reportList) {
+            reportService.delete(report.getId());
+        }
+
+        /* ===== 日報削除（ここまで）===== */
+
+        // 従業員を論理削除
         employee.setUpdatedAt(now);
         employee.setDeleteFlg(true);
 
         return ErrorKinds.SUCCESS;
     }
+
 
     // 従業員一覧表示処理
     public List<Employee> findAll() {
