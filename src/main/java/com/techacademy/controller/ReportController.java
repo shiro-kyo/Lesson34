@@ -1,5 +1,6 @@
 package com.techacademy.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,13 +34,24 @@ public class ReportController {
     }
 
     // 日報一覧画面
+ // 日報一覧画面
     @GetMapping
-    public String list(Model model) {
-        List<Report> reports = reportService.findAll();
+    public String list(@AuthenticationPrincipal UserDetail userDetail, Model model) {
+
+        List<Report> reports;new ArrayList<>();
+
+        // 管理者なら全件、それ以外は自分の分だけ
+        if (userDetail.getEmployee().getRole() == Employee.Role.ADMIN) {
+            reports = reportService.findAll();
+        } else {
+            reports = reportService.findByEmployee(userDetail.getEmployee());
+        }
+
         model.addAttribute("reportList", reports);
         model.addAttribute("listSize", reports.size());
         return "reports/list";
     }
+
     
  // 日報詳細画面
     @GetMapping("/{id}/")

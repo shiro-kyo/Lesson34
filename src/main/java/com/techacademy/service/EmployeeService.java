@@ -14,16 +14,19 @@ import com.techacademy.constants.ErrorKinds;
 import com.techacademy.entity.Employee;
 import com.techacademy.entity.Report;
 import com.techacademy.repository.EmployeeRepository;
+import com.techacademy.repository.ReportRepository;
 
 @Service
 public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ReportRepository reportRepository;
 
-    public EmployeeService(EmployeeRepository employeeRepository, PasswordEncoder passwordEncoder) {
+    public EmployeeService(EmployeeRepository employeeRepository, PasswordEncoder passwordEncoder, ReportRepository reportRepository) {
         this.employeeRepository = employeeRepository;
         this.passwordEncoder = passwordEncoder;
+        this.reportRepository = reportRepository;
     }
 
     // 従業員保存
@@ -71,11 +74,11 @@ public class EmployeeService {
         /* ===== 日報削除（ここから）===== */
 
         // 従業員に紐づく日報を取得
-        List<Report> reportList = reportService.findByEmployee(employee);
+        List<Report> reportList = reportRepository.findByEmployee(employee);
 
         // 1件ずつ論理削除
         for (Report report : reportList) {
-            reportService.delete(report.getId());
+            reportRepository.deleteById(report.getId());
         }
 
         /* ===== 日報削除（ここまで）===== */
